@@ -1,6 +1,6 @@
 import React, {Fragment} from "react";
 import image from "./images/webpack.png";
-import "./style/style.scss";
+import "./styles/style.scss";
 
 
 export const App = () => {
