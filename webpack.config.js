@@ -2,6 +2,7 @@ require("@babel/polyfill");
 const path = require("path");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
     mode: "production", //development, production
@@ -11,7 +12,7 @@ module.exports = {
     },
     
     output: {
-        filename: "[name].[contenthash].js",
+        filename: "js/[name].[contenthash].js",
         path: path.resolve(__dirname, "dist"),
     },
 
@@ -26,6 +27,10 @@ module.exports = {
         }),
 
         new CleanWebpackPlugin(),
+
+        new MiniCssExtractPlugin({
+            filename: "styles/[name].[contenthash].css",
+        }),
     ],
 
     module: {
@@ -46,17 +51,17 @@ module.exports = {
 
             {
                 test: /\.css$/i,
-                use: ["style-loader", "css-loader"],
+                use: [MiniCssExtractPlugin.loader, "css-loader"],
             },
 
             {
                 test: /\.less$/i,
-                use: ["style-loader", "css-loader", "less-loader"],
+                use: [MiniCssExtractPlugin.loader, "css-loader", "less-loader"],
             },
 
             {
                 test: /\.s[ac]ss$/i,
-                use: ["style-loader", "css-loader", "sass-loader"],
+                use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"], //используется
             },
 
             {
@@ -64,9 +69,19 @@ module.exports = {
                 use: [
                     {
                         loader: "file-loader",
+                        options: {
+                            name: "[name].[ext]",
+                            outputPath: "img/",
+                        }
                     }
                 ]
             }
         ]
+    },
+
+    performance: {
+        hints: false, // Отключаем предупреждения о производительности
+        maxEntrypointSize: 512000, // Максимальный размер главного бандла
+        maxAssetSize: 512000 // Максимальный размер отдельного файла
     }
 }
